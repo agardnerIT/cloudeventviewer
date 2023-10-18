@@ -7,7 +7,6 @@ import json
 from json_logic import jsonLogic
 import os
 
-load_demo_data = True # TODO move to env var
 DEFAULT_TZ = timezone.utc
 data_filter = "ALL"
 
