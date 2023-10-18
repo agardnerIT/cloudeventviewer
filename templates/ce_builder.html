@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CloudEvents Builder</title>
+
+        {% include 'common/fonts.html' %}
+        {% include 'common/style.html' %}
+
+        <script>
+            generated_cloud_event = {}
+
+            function process_form() {
+                ce_type = document.getElementById('ce_type').value;
+                ce_source = document.getElementById('ce_source').value;
+                ce_data = document.getElementById('ce_data').value;
+
+                ce_time = new Date();
+
+                if (ce_data == "") {
+                    ce_data = {}
+                } else if (ce_data.startsWith("{")) {
+                    ce_data = JSON.parse(ce_data);
+                }
+
+                ce_id = crypto.randomUUID();
+
+                generated_cloud_event = {
+                    "specversion": "1.0",
+                    "id": ce_id,
+                    "type": ce_type,
+                    "source": ce_source,
+                    "time": ce_time,
+                    "datacontenttype": "application/json",
+                    "data": ce_data
+                }
+
+                // Display generated cloud event visually
+                document.getElementById('ce_window').textContent = JSON.stringify(generated_cloud_event, null, " ");
+                // Populate the curl code snippet
+                document.getElementById('send_ce_code_snippet').textContent = "curl -X POST http://{{ uri }}:{{ port }}/insert -H \"Content-type: application/json\" -d '" + JSON.stringify(generated_cloud_event) + "'";
+                // Show "send cloudevent" button
+                document.getElementById('send_ce_btn').style.visibility = "visible";
+            }
+            function send_ce() {
+                // POST the cloudevent to the insert endpoint
+                fetch("/insert", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(generated_cloud_event)
+                }).then(data => {
+                    // Show confirmation dialogue...
+                    document.getElementById('send_cloudevent_confirmation').style.visibility = "visible";
+                }).catch(error => {
+                    console.log("Error caught" + error)
+                    // Maybe present some error/failure UI to the user here
+                });
+            }
+        </script>
+
+    </head>
+    <body>
+        {% include 'common/menu_bar.html' %}
+        {% include 'common/logo.html' %}
+
+        <h1>CloudEvent Builder</h1>
+
+        <p>This screen helps build a CloudEvent in JSON format.</p>
+
+        <form onsubmit="event.preventDefault(); process_form();">
+            <label for="ce_type">Type:</label>
+            <input required type="text" id="ce_type" value="order.processed" /><br />
+            <label for="ce_source">Source:</label>
+            <input required type="text" id="ce_source" value="https://example.com/demo" /><br />
+            <label for="ce_data">Data:</label>
+            <textarea id="ce_data" cols="30" rows="10">{ "generated-by-builder": "yes" }</textarea><br />
+            <input type="submit" value="Create CloudEvent" /></form>
+        </form>
+
+        <hr />
+
+        <h2>Generated Output</h2>
+
+        <textarea id="ce_window" cols="50" rows="20"></textarea>
+
+        <hr />
+
+        <h2>Send CloudEvent</h2>
+
+        <p>Click the button or use the code below to send this cloudevent to the viewer.</p>
+
+        <button onclick="send_ce()" id="send_ce_btn">Send CloudEvent now</button>
+        <p id="send_cloudevent_confirmation">CloudEvent Sent! Check <a href="/" target="_blank">the live viewer</a> to confirm.</p>
+        <br />
+
+        <code id="send_ce_code_snippet"></code>
+
+    </body>
+</html>

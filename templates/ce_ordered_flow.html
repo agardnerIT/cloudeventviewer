@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CloudEvents Viewer</title>
+
+        {% include 'common/fonts.html' %}
+        {% include 'common/style.html' %}
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+
+        <script>
+            function clear_demo_data() {
+                console.log("clearing demo data...");
+                fetch("/clear_demo_data", {
+                    method: "GET",
+                }).then(data => {
+                    textarea = document.getElementById('ce_order_textarea');
+                    textarea.value = "";
+                    // reload page
+                    document.location.reload(true); // true forces server-side refresh
+                }).catch(error => {
+                    console.log("Error caught" + error)
+                    // Maybe present some error/failure UI to the user here
+                });
+            }
+            function load_demo_data() {
+                console.log("Loading demo data...");
+                fetch("/load_demo_data", {
+                    method: "GET",
+                }).then(data => {
+                    // refresh page
+                    document.location.reload(true); // true forces server-side refresh
+                }).catch(error => {
+                    console.log("Error caught" + error)
+                    // Maybe present some error/failure UI to the user here
+                });
+            }
+            function update_ce_order() {
+                console.log("Update button clicked...");
+                textarea = document.getElementById('ce_order_textarea');
+
+                data = {
+                    "type": "csv",
+                    "field": "ALL",
+                    "comparator": "==",
+                    "value": textarea.value
+                }
+
+                fetch("/update_order", {
+                    method: "POST",
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: JSON.stringify(data),
+                }).then(data => {
+                    console.log("In then... Data is: " + data.status);
+                    //location.replace(location.href);
+                    document.location.reload(true); // true forces server-side refresh
+                }).catch(error => {
+                    console.log("Error caught" + error)
+                    // Maybe present some error/failure UI to the user here
+                });
+
+            }
+            function clear_all_data() {
+                fetch("/clear_all_data", {
+                    method: "GET",
+                }).then(data => {
+                    document.location.reload(true); // true forces server-side refresh
+                }).catch(error => {
+                    console.log("Error caught" + error)
+                    // Maybe present some error/failure UI to the user here
+                });
+            }
+        </script>
+
+    </head>
+    <body>
+        {% include 'common/menu_bar.html' %}
+        {% include 'common/logo.html' %}
+
+        <h1>CloudEvents Flow Viewer</h1>
+
+        <p>This screen helps demonstrate the logical flow of cloudevents as they related to technical or business processes.</p>
+
+        <h3>Example Uses</h3>
+        <ul>
+            <li>A DevOps engineer traces a CI/CD pipeline that emits cloudevents at each step.</li>
+            <li>A teaches tracks tutorial completion, emitting cloudevents after each step.</li>
+            <li>A clothing business that tracks their supply chain: Raw textiles are ordered, textiles reach the factory, clothes are made, clothes hit the shop floor.</li>
+            <li>Any other logical process where each "step" can be represented by an event.</li>
+        </ul>
+
+        <hr />
+        
+        <button onclick="clear_demo_data()">Clear Demo Data</button><button onclick="load_demo_data()">Load Demo Data</button><br />
+        <button onclick="clear_all_data()">DANGER: Clear all data</button><br />
+
+        <hr />
+
+        <p>Provide a comma-seperated list of cloudevents and click the <code>update cloudevent order</code> button.</p>
+        <p>To send and plot your own cloudevents, see <a href="/help">send new cloudevents</a> for more information.</p>
+
+        <textarea rows="5" cols="200" id="ce_order_textarea">{{ ce_order }}</textarea>
+        <button onclick="update_ce_order()">Update CE order...</button>
+        <br /><br />
+
+        <br /><br />
+        
+        <div>
+            <canvas id="myChart"></canvas>
+          </div>
+          
+          <script>
+            Chart.register(ChartDataLabels);
+            Chart.defaults.set('plugins.datalabels', {
+                color: '#000',
+                font: {
+                    size: '20'
+                }
+            });
+
+            function organise_data(raw_data) {
+
+                let sorted = []
+
+                for (let i = 0; i < raw_data.length; i++) {
+                    let type = raw_data[i]['type']
+                    
+                    //const itemFound = sorted.find(el => el.type === type);
+                    const itemFound = sorted.find((o) => o.type === type);
+
+                    if (!itemFound) {
+                        sorted.push({
+                            "type": type,
+                            "count": 1
+                        });
+                    } else {
+                        itemFound['count'] += 1;
+                    }
+                }
+
+                return sorted;
+
+            }
+            const ctx = document.getElementById('myChart');
+            
+            // Pull data from Flask input
+            const new_data = {{ cloud_events | tojson }}
+
+            var organised = organise_data(new_data);
+          
+            new Chart(ctx, {
+              type: 'bar',
+              data: {
+                labels: organised.map(row => row.type),
+                datasets: [{
+                  label: 'Cloud Events by Type',
+                  data: organised.map(row => row.count),
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                scales: {
+                  y: {
+                    beginAtZero: true
+                  }
+                }
+              }
+            });
+          </script>
+
+    </body>
+</html>

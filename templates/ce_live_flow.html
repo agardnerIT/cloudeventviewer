@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CloudEvents Viewer</title>
+        
+        {% include 'common/fonts.html' %}
+        {% include 'common/style.html' %}
+
+        <script>
+            function clear_demo_data() {
+                console.log("clearing demo data...");
+                fetch("/clear_demo_data", {
+                    method: "GET",
+                }).then(data => {
+                    document.location.reload(true); // true forces server-side refresh
+                }).catch(error => {
+                    console.log("Error caught" + error)
+                    // Maybe present some error/failure UI to the user here
+                });
+            }
+            function load_demo_data() {
+                console.log("Loading demo data...");
+                fetch("/load_demo_data", {
+                    method: "GET",
+                }).then(data => {
+                    //location.replace(location.href);
+                    document.location.reload(true); // true forces server-side refresh
+                }).catch(error => {
+                    console.log("Error caught" + error)
+                    // Maybe present some error/failure UI to the user here
+                });
+            }
+            function clear_all_data() {
+                console.log("clearing ALL data");
+                fetch("/clear_all_data", {
+                    method: "GET",
+                }).then(data => {
+                    document.location.reload(true); // true forces server-side refresh
+                }).catch(error => {
+                    console.log("Error caught" + error)
+                    // Maybe present some error/failure UI to the user here
+                });
+            }
+            function filter_data() {
+                filter = document.getElementById('ce_filter').value;
+                console.log("Filter for: " + filter);
+
+                fetch("/filter", {
+                        method: "POST",
+                        headers: {
+                            "Content-type": "text"
+                        },
+                        body: filter,
+                    }).then(data => {
+                        document.location.reload(true); // true forces server-side refresh
+                    }).catch(error => {
+                        console.log("Error caught" + error)
+                        // Maybe present some error/failure UI to the user here
+                    });
+            }
+        </script>
+
+    </head>
+    <body>
+        {% include 'common/menu_bar.html' %}
+        {% include 'common/logo.html' %}
+
+        <h1>CloudEvents Viewer</h1>
+
+        <p>The CloudEvents viewer exists to help demonstrate the power and value of CloudEvents.</p>
+        <p>It is a free, open source, in-memory CloudEvent database and UI in a single package.</p>
+
+        <hr />
+
+        <button onclick="clear_demo_data()">Clear Demo Data</button><button onclick="load_demo_data()">Load Demo Data</button><br />
+        <button onclick="clear_all_data()">DANGER: Clear all data</button><br />
+
+        <hr />
+
+        <h2>Cloud Events List</h2>
+        
+        <p>This page shows a raw list of all CloudEvents in the system. Refresh page to see new events.</p>
+        <p>Send new events by using the <a href="/build">CloudEvent builder</a> or <code>POST</code> a request to <code>http://localhost:5000/insert</code>. See <a href="/help">send new cloudevents</a> for more information.</p>
+
+        <hr />
+
+        {% include 'common/filter.html' %}
+
+        <hr />
+        
+        <table class="ce_table">
+            <th>time</th><th>id</th><th>type</th><th>source</th><th>data</th>
+
+            {% for ce in cloud_events %}
+            <tr>
+                <td>{{ ce.time }}</td><td>{{ ce.id }}</td><td>{{ ce.type }}</td><td>{{ ce.source }}</td><td>{{ ce.data }}</td>
+            </tr>
+            {% endfor %}
+
+            
+        </table>
+
+    </body>
+</html>

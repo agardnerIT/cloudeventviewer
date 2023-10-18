@@ -1,0 +1,71 @@
+{
+    "HOST": "127.0.0.1",
+    "PORT": 6060,
+    "MIN_LOG_LEVEL": "INFO",
+    "LOAD_DEMO_DATA": true,
+    "DEFAULT_CLOUD_EVENT_TYPE": "com.example.default",
+    "DEFAULT_CLOUD_EVENT_ORDER": "pipeline.started, task1.started, task1.finished, pipeline.finished",
+    "DEFAULT_CLOUD_EVENT_SKELETONS": [{
+             "type": "foo",
+             "source": "https://example.com/event-producer",
+             "data": {
+                "is_demo_data": true
+            }
+         }, {
+            "type": "pipeline.started",
+            "source": "https://example.com/event-producer",
+            "data": {
+               "is_demo_data": true,
+               "correlation_id": 1234
+           }
+        }, {
+            "type": "pipeline.started",
+            "source": "https://example.com/event-producer",
+            "data": {
+               "is_demo_data": true,
+               "correlation_id": 2345
+           }
+        }, {
+            "type": "pipeline.started",
+            "source": "https://example.com/event-producer",
+            "data": {
+               "is_demo_data": true,
+               "correlation_id": 3456
+           }
+        }, {
+            "type": "task1.started",
+            "source": "https://example.com/event-producer",
+            "data": {
+               "is_demo_data": true,
+               "correlation_id": 1234
+           }
+        }, {
+            "type": "task1.finished",
+            "source": "https://example.com/event-producer",
+            "data": {
+               "is_demo_data": true,
+               "correlation_id": 1234
+           }
+        }, {
+            "type": "pipeline.finished",
+            "source": "https://example.com/event-producer",
+            "data": {
+               "is_demo_data": true,
+               "correlation_id": 1234
+           }
+        }, {
+            "type": "pipeline.finished",
+            "source": "https://example.com/event-producer",
+            "data": {
+               "is_demo_data": true,
+               "correlation_id": 2345
+           }
+        }, {
+            "type": "pipeline.finished",
+            "source": "https://example.com/event-producer",
+            "data": {
+               "is_demo_data": true,
+               "correlation_id": 3456
+           }
+        }]
+}

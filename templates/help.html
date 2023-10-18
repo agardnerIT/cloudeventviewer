@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CloudEvents Viewer Help</title>
+
+        {% include 'common/fonts.html' %}
+        {% include 'common/style.html' %}
+
+    </head>
+    <body>
+        {% include 'common/menu_bar.html' %}
+        {% include 'common/logo.html' %}
+
+        <h1>CloudEvents Viewer Help</h1>
+
+        <p>The CloudEvents viewer exists to help demonstrate the power and value of CloudEvents.</p>
+        <p>It is a free, open source, in-memory CloudEvent database and UI in a single package.</p>
+        <p>It is intended to <strong>not</strong> designed for production usage. Use CloudEvents viewer to prove the value, then build a real production-ready system with other tools.</p>
+        
+        <h2>About CloudEvents</h2>
+        <p>CloudEvents is a standard specification describing events in a vendor neutral way.</p>
+        <p>CloudEvents can be implemented and trasmitted in any language or transport protocol.</p>
+        <p>This tool "speaks" CloudEvents in JSON, transmitted via HTTP.</p>
+        <p>For more information see the <a href="https://cloudevents.io">CloudEvents website</a>.</p>
+
+        <h2>Send New CloudEvents</h2>
+
+        <h3>Use CloudEvent Builder</h3>
+        <p>The <a href="/build">CloudEvent builder</a> is a user interface to build and send CloudEvents.</p>
+        <p>If you are new to CloudEvents, it is recommended to start here.</p>
+
+        <h3>Insert One CloudEvent</h3>
+        <code>curl -X POST http://{{ uri }}:{{ port }}/insert -H "Content-type: application/json" -d '{ CLOUD_EVENT_JSON }'</code>
+
+        <h3>Bulk Insert Multiple CloudEvents</h3>
+        <code>curl -X POST http://{{ uri }}:{{ port }}/insert -H "Content-type: application/json" -d '[{ CLOUD_EVENT_JSON }, { EVENT_2} ...]'</code>

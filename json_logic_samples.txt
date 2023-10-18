@@ -1,0 +1,17 @@
+# DIRECT EQUALITY
+# Does "type" field equal "pipeline.finished"
+# "type": "pipeline.finished" TRUE
+{"==" : [ { "var" : "type" }, "pipeline.finished" ] }
+
+# DIRECT EQUALITY WITH SUBFIELD
+# Does "data" contain a key "foo"
+# and does data.foo equal 12345
+{"==" : [ { "var" : "data.foo" }, 12345 ] }
+
+# IN: is "started" in type field
+# "type": "purchase.started" TRUE
+{"in" : [ "started", { "var" : "type" } ] }
+
+# NOT
+# Give me everything that is NOT type == "foo"
+{"!=" : [ { "var" : "type" }, "foo" ] }
