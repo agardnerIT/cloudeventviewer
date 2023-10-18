@@ -4,7 +4,7 @@ A free, open source in-memory [Cloud Events](https://cloudevents.io) viewer.
 
 ## Use The CloudEvent Viewer
 
-Click "Code" > Codespaces > Open codespace on main
+Click "Code" > Codespaces > Create codespace on main
 
 When the codespace starts, toggle to the Ports tab and open the application on port 6060.
 
