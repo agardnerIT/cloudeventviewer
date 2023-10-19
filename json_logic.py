@@ -1,6 +1,8 @@
 # This is a Python implementation of the following jsonLogic JS library:
 # https://github.com/jwadhams/json-logic-js
 #
+# Original code from https://github.com/nadirizr/json-logic-py
+#
 # Need to use this as the version on pip is not up-to-date
 # https://pypi.org/project/json-logic/
 # Also this file != https://github.com/nadirizr/json-logic-py/blob/master/json_logic/__init__.py
