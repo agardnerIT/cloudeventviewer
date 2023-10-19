@@ -11,8 +11,13 @@ DEFAULT_TZ = timezone.utc
 data_filter = "ALL"
 
 # Usage
-# Note: MacOS post 5000 is used. Pick 5002 instead
-# flask --app=app run --host 0.0.0.0 --port 5002
+# Note: MacOS post 5000 is used. Choose a different port.
+# Configuration is via config.json
+# config.json MUST be present at startup
+#
+# python app.py
+#
+# Insert data using the UI or:
 # curl -X POST http://localhost:5002/insert -H 'Content-Type: application/json' -d '{"type": "pipeline.started"}'
 
 app = Flask(__name__)
