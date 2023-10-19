@@ -18,3 +18,9 @@ python app.py
 # App is running on http://127.0.0.1:6060
 # Configure via config.json and restart app to pick up new configs
 ```
+
+## The Technical details
+
+This is a flask app that uses an in-memory sqlite3 database.
+
+Filtering is performed via jsonlogic. See [json_logic_samples.txt](json_logic_samples.txt) for examples.
